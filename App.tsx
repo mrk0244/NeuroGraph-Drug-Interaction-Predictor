@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Activity, BrainCircuit, Share2, Info, AlertTriangle, ArrowRight, Database, Maximize2, Minimize2, X, BookOpen, Layers, Microscope } from 'lucide-react';
+import { Activity, BrainCircuit, Share2, Info, AlertTriangle, ArrowRight, Database, Maximize2, Minimize2, X, BookOpen, Layers, Microscope, MousePointerClick, ZoomIn, Shuffle } from 'lucide-react';
 import NetworkGraph from './components/NetworkGraph';
 import DrugInput from './components/DrugInput';
 import { predictInteractions } from './services/geminiService';
@@ -16,6 +16,15 @@ const INITIAL_NODES = [
 const INITIAL_LINKS = [
   { source: '1', target: '2', type: 'encodes' },
   { source: '2', target: '3', type: 'predicts' }
+];
+
+const EXAMPLE_PAIRS = [
+  { a: "Lisinopril", b: "Ibuprofen" },
+  { a: "Simvastatin", b: "Grapefruit Juice" },
+  { a: "Caffeine", b: "Melatonin" },
+  { a: "Sertraline", b: "Tramadol" },
+  { a: "Metformin", b: "Insulin" },
+  { a: "Alcohol", b: "Acetaminophen" }
 ];
 
 const App: React.FC = () => {
@@ -41,6 +50,12 @@ const App: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRandomize = () => {
+    const randomPair = EXAMPLE_PAIRS[Math.floor(Math.random() * EXAMPLE_PAIRS.length)];
+    setDrugA(randomPair.a);
+    setDrugB(randomPair.b);
   };
 
   const chartData = result?.predictions.map((p, index) => ({
@@ -108,10 +123,20 @@ const App: React.FC = () => {
               
               {/* Input Card */}
               <div className="glass-panel p-5 rounded-2xl shadow-xl shadow-black/20 shrink-0">
-                <h3 className="text-md font-semibold mb-4 flex items-center gap-2">
-                  <Database className="w-4 h-4 text-purple-400" />
-                  Select Compounds
-                </h3>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-md font-semibold flex items-center gap-2">
+                    <Database className="w-4 h-4 text-purple-400" />
+                    Select Compounds
+                  </h3>
+                  <button 
+                    onClick={handleRandomize}
+                    className="p-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-lg transition-colors flex items-center gap-1.5 border border-slate-700"
+                    title="Load Random Example Pair"
+                  >
+                    <Shuffle className="w-3 h-3" />
+                    Random
+                  </button>
+                </div>
                 
                 <div className="space-y-3">
                   <DrugInput 
@@ -306,7 +331,7 @@ const App: React.FC = () => {
                    <div className="p-2 bg-purple-600/20 rounded-lg border border-purple-500/30">
                       <BookOpen className="w-5 h-5 text-purple-400" />
                    </div>
-                   <h2 className="text-xl font-bold text-white">System Documentation</h2>
+                   <h2 className="text-xl font-bold text-white">User Manual & Documentation</h2>
                 </div>
                 <button onClick={() => setShowDocs(false)} className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition-colors">
                   <X className="w-5 h-5" />
@@ -315,43 +340,53 @@ const App: React.FC = () => {
              
              {/* Modal Content */}
              <div className="p-6 space-y-8 text-slate-300">
-                <section>
-                  <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                    <Layers className="w-5 h-5 text-blue-400" />
-                    Overview
+                
+                {/* How to Use Section */}
+                <section className="bg-slate-800/30 p-5 rounded-2xl border border-slate-700/50">
+                  <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <MousePointerClick className="w-5 h-5 text-purple-400" />
+                    How to Work With This App
                   </h3>
-                  <p className="leading-relaxed text-sm">
-                    NeuroGraph is a cutting-edge bioinformatics tool designed to predict side effects that occur when two or more drugs are taken together—a phenomenon known as <strong>polypharmacy</strong>. 
-                    It simulates the inference capabilities of a <strong className="text-purple-300">Graph Neural Network (GNN)</strong> trained on massive biomedical knowledge graphs like Decagon and DrugBank.
-                  </p>
+                  <ol className="relative border-l border-slate-700 ml-3 space-y-6">
+                    <li className="ml-6">
+                        <span className="absolute flex items-center justify-center w-6 h-6 bg-slate-800 rounded-full -left-3 ring-4 ring-slate-900 border border-purple-500/50 text-xs font-bold text-purple-400">1</span>
+                        <h4 className="font-semibold text-slate-200">Define Interaction</h4>
+                        <p className="text-sm mt-1">Locate the <strong>Select Compounds</strong> panel on the left. Enter any two drug names (e.g., "Warfarin" and "Aspirin") to begin analysis. You can also click the <strong>Random</strong> button to try examples.</p>
+                    </li>
+                    <li className="ml-6">
+                        <span className="absolute flex items-center justify-center w-6 h-6 bg-slate-800 rounded-full -left-3 ring-4 ring-slate-900 border border-purple-500/50 text-xs font-bold text-purple-400">2</span>
+                        <h4 className="font-semibold text-slate-200">Run Simulation</h4>
+                        <p className="text-sm mt-1">Click <strong>Run Prediction</strong>. The system generates a knowledge graph and predicts potential side effects.</p>
+                    </li>
+                    <li className="ml-6">
+                        <span className="absolute flex items-center justify-center w-6 h-6 bg-slate-800 rounded-full -left-3 ring-4 ring-slate-900 border border-purple-500/50 text-xs font-bold text-purple-400">3</span>
+                        <h4 className="font-semibold text-slate-200">Explore & Analyze</h4>
+                        <p className="text-sm mt-1">Use your mouse to <strong>Zoom</strong> and <strong>Pan</strong> the graph. Click on any node to view its specific biological description.</p>
+                    </li>
+                  </ol>
                 </section>
 
-                <section>
-                  <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                    <BrainCircuit className="w-5 h-5 text-purple-400" />
-                    How It Works
-                  </h3>
-                  <div className="space-y-4">
-                    <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
-                        <h4 className="text-white font-medium mb-1">1. Knowledge Graph Construction</h4>
-                        <p className="text-sm text-slate-400">
-                           The system represents biological data as a graph. Drugs and proteins are <strong>Nodes</strong>, while known interactions (e.g., "drug X targets protein Y") are <strong>Edges</strong>.
-                        </p>
-                    </div>
-                    <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
-                        <h4 className="text-white font-medium mb-1">2. Link Prediction</h4>
-                        <p className="text-sm text-slate-400">
-                           The core AI task is <strong>Link Prediction</strong>. The model analyzes the graph topology to predict missing edges between Drug nodes and Side Effect nodes that haven't been discovered yet in clinical trials.
-                        </p>
-                    </div>
-                    <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700/50">
-                        <h4 className="text-white font-medium mb-1">3. Interaction Analysis</h4>
-                        <p className="text-sm text-slate-400">
-                           Click on any node in the graph to view its specific biological <strong>description</strong>, function, or role in the predicted interaction pathway.
-                        </p>
-                    </div>
-                  </div>
-                </section>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <section>
+                      <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                        <Layers className="w-5 h-5 text-blue-400" />
+                        Overview
+                      </h3>
+                      <p className="leading-relaxed text-sm">
+                        NeuroGraph is a cutting-edge bioinformatics tool designed to predict side effects that occur when two or more drugs are taken together—a phenomenon known as <strong>polypharmacy</strong>.
+                      </p>
+                    </section>
+
+                    <section>
+                      <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+                        <BrainCircuit className="w-5 h-5 text-purple-400" />
+                        Tech Stack
+                      </h3>
+                      <p className="leading-relaxed text-sm">
+                         It simulates a <strong className="text-purple-300">Graph Neural Network (GNN)</strong> inference engine using Gemini 2.5 Flash to construct biological subgraphs and predict link probabilities.
+                      </p>
+                    </section>
+                </div>
 
                 <section>
                    <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
