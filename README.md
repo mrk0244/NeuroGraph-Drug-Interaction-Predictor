@@ -1,20 +1,29 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# NeuroGraph: Drug Interaction Predictor
 
-# Run and deploy your AI Studio app
+## Overview
+NeuroGraph is an AI-powered biomedical simulator that uses Graph Neural Networks (GNNs) logic to predict polypharmacy side effects.
 
-This contains everything you need to run your app locally.
+## How to Work With This App
 
-View your app in AI Studio: https://ai.studio/apps/drive/1i4XzEsqnbjoBmezgdVnPtMLFPxyibzms
+### 1. Define Interaction
+*   Locate the **Select Compounds** panel on the left.
+*   Enter the name of the first drug (e.g., *Warfarin*) in the "Drug A" field.
+*   Enter the name of the second drug (e.g., *Aspirin*) in the "Drug B" field.
 
-## Run Locally
+### 2. Run Simulation
+*   Click the **Run Prediction** button.
+*   The system will use the Gemini API to generate a knowledge graph subgraph and predict potential side effects based on biological mechanisms.
 
-**Prerequisites:**  Node.js
+### 3. Analyze Results
+*   **Summary:** Read the scientific summary of how these drugs interact.
+*   **Predictions:** Review the list of predicted side effects and their probability scores.
+*   **Confidence:** Check the radial chart for the model's confidence levels.
 
+### 4. Explore the Graph
+*   **Zoom:** Use your mouse wheel or trackpad to zoom in and out of the network.
+*   **Pan:** Click and drag the background to move around the graph.
+*   **Details:** Click on any node (Drug, Protein, or Side Effect) to view its specific biological description in the overlay panel.
+*   **Fullscreen:** Use the expand icon in the graph header to toggle fullscreen mode for a better view of the topology.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Technical Details
+This application simulates GNN link prediction by using a Large Language Model (Gemini 2.5) to construct the graph topology and infer relationships (edges) that would likely exist in a complete biomedical knowledge graph.
