@@ -1,0 +1,5 @@
+{
+  "name": "NeuroGraph: Drug Interaction Predictor",
+  "description": "NeuroGraph is an advanced biomedical AI simulator that uses Graph Neural Networks (GNNs) to predict polypharmacy side effects. By modeling drugs and proteins as a complex knowledge graph, it identifies potential adverse interactions between medications that have not yet been discovered in clinical trials.",
+  "requestFramePermissions": []
+}
