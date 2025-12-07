@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Activity, BrainCircuit, Share2, Info, AlertTriangle, ArrowRight, Database, Maximize2, Minimize2, X, BookOpen, Layers, Microscope, MousePointerClick, ZoomIn, Shuffle } from 'lucide-react';
+import { Activity, BrainCircuit, Share2, Info, AlertTriangle, ArrowRight, Database, Maximize2, Minimize2, X, BookOpen, Layers, Microscope, MousePointerClick, ZoomIn, Shuffle, GitBranch } from 'lucide-react';
 import NetworkGraph from './components/NetworkGraph';
 import DrugInput from './components/DrugInput';
+import WorkflowDiagram from './components/WorkflowDiagram';
 import { predictInteractions } from './services/geminiService';
 import { AnalysisResult, GraphNode } from './types';
 import { RadialBarChart, RadialBar, Legend, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
@@ -341,8 +342,17 @@ const App: React.FC = () => {
              {/* Modal Content */}
              <div className="p-6 space-y-8 text-slate-300">
                 
-                {/* How to Use Section */}
+                {/* Workflow Section */}
                 <section className="bg-slate-800/30 p-5 rounded-2xl border border-slate-700/50">
+                  <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                    <GitBranch className="w-5 h-5 text-blue-400" />
+                    System Workflow
+                  </h3>
+                  <WorkflowDiagram />
+                </section>
+
+                {/* How to Use Section */}
+                <section>
                   <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                     <MousePointerClick className="w-5 h-5 text-purple-400" />
                     How to Work With This App

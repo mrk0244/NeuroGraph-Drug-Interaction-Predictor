@@ -3,6 +3,13 @@
 ## Overview
 NeuroGraph is an AI-powered biomedical simulator that uses Graph Neural Networks (GNNs) logic to predict polypharmacy side effects.
 
+## System Workflow
+1.  **Input Selection**: User pairs two pharmaceutical compounds.
+2.  **Knowledge Retrieval**: System identifies proteins, enzymes, and metabolic pathways associated with the drugs.
+3.  **Graph Construction**: A knowledge subgraph is built, mapping drugs (sources) to proteins (targets).
+4.  **GNN Inference**: The model simulates a Graph Neural Network to predict missing links (side effects) based on topology.
+5.  **Risk Assessment**: The system outputs a probability score and a warning for potential adverse events.
+
 ## How to Work With This App
 
 ### 1. Define Interaction
