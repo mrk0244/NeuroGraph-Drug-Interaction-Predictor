@@ -9,7 +9,7 @@ export default defineConfig(({ mode }) => {
     define: {
       // Polyfill process.env for the Google GenAI SDK and API Key usage
       'process.env': {
-        API_KEY: JSON.stringify(env.API_KEY || process.env.API_KEY || "AIzaSyCWtGPNEF4_FX9zmhXSTNUDbYhddMJlijI")
+        API_KEY: JSON.stringify(env.API_KEY || process.env.API_KEY || "")
       }
     },
     build: {
