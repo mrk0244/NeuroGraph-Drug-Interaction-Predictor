@@ -1,3 +1,4 @@
+
 export enum NodeType {
   DRUG = 'DRUG',
   PROTEIN = 'PROTEIN',
@@ -35,4 +36,11 @@ export interface AnalysisResult {
 export interface DrugOption {
   value: string;
   label: string;
+}
+
+export interface AnalysisSession {
+  id: string;
+  drugs: string[]; // List of drugs in the analysis
+  result: AnalysisResult;
+  timestamp: number;
 }

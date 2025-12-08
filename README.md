@@ -10,6 +10,38 @@ NeuroGraph is an AI-powered biomedical simulator that uses Graph Neural Networks
 4.  **GNN Inference**: The model simulates a Graph Neural Network to predict missing links (side effects) based on topology.
 5.  **Risk Assessment**: The system outputs a probability score and a warning for potential adverse events.
 
+## Installation & Deployment
+
+This project uses **Vite** as a build tool. To run it locally or deploy it to GitHub Pages, follow these steps:
+
+### 1. Install Dependencies
+Make sure you have Node.js installed, then run:
+```bash
+npm install
+```
+
+### 2. Configure API Key
+Create a `.env` file in the root directory (or set it in your environment variables):
+```
+API_KEY=your_gemini_api_key_here
+```
+
+### 3. Run Locally
+To start the development server:
+```bash
+npm run dev
+```
+
+### 4. Build for GitHub Pages
+1.  Run the build command:
+    ```bash
+    npm run build
+    ```
+2.  This will create a `dist` folder.
+3.  Upload the contents of the `dist` folder to your GitHub repository (or use a `gh-pages` deployment action).
+
+**Note for GitHub Pages**: If deploying to a subdirectory (e.g., `username.github.io/repo-name`), you may need to set the `base` property in `vite.config.ts`.
+
 ## How to Work With This App
 
 ### 1. Define Interaction

@@ -5,23 +5,29 @@ import { AnalysisResult, NodeType } from "../types";
 // Note: We use process.env.API_KEY as per instructions.
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-export const predictInteractions = async (drugA: string, drugB: string): Promise<AnalysisResult> => {
-  const modelId = "gemini-2.5-flash";
+export const predictInteractions = async (drugs: string[]): Promise<AnalysisResult> => {
+  // Upgraded to gemini-3-pro-preview for higher accuracy on complex reasoning tasks
+  const modelId = "gemini-3-pro-preview";
   
+  const drugsList = drugs.join('", "');
+
   const prompt = `
-    Act as a biomedical Knowledge Graph Neural Network (GNN) expert system. 
-    Analyze the potential polypharmacy interactions between "${drugA}" and "${drugB}".
+    Act as a senior Clinical Toxicologist and Biomedical Knowledge Graph expert. 
+    Perform a high-precision analysis of the potential polypharmacy interactions between the following list of drugs: "${drugsList}".
     
-    1. Identify the biological mechanism of action for both drugs (primary protein targets).
-    2. Predict potential side effects (edges in a knowledge graph) that arise specifically from the combination of these two drugs (polypharmacy).
-    3. Generate a subgraph structure that a GNN would use to make this prediction. This subgraph should include:
-       - The two drugs (Nodes)
-       - Key target proteins or pathways (Nodes)
-       - The predicted side effects (Nodes)
-       - Relationships between them (Links: e.g., "targets", "synergizes_with", "causes")
+    Execute the following cognitive analysis steps to ensure accuracy:
+    1. **Pharmacokinetic (PK) Analysis**: Evaluate if these drugs compete for the same metabolic enzymes (specifically CYP450 isozymes like CYP3A4, CYP2D6, CYP2C9). Is one drug an inhibitor or inducer of the others' metabolism? Check for P-glycoprotein (P-gp) transporter interactions.
+    2. **Pharmacodynamic (PD) Analysis**: Evaluate if the drugs act on the same receptors or physiological pathways (e.g., additive CNS depression, QT prolongation, serotonin syndrome risk, or bleeding risk). Consider cumulative effects of multiple drugs.
+    3. **Graph Construction**: Construct a causal subgraph that explains *why* the interactions occur.
     
-    For every node, provide a concise scientific description (e.g., "A protein involved in blood coagulation" or "A common NSAID").
-    Provide a confidence score (0.0 to 1.0) for the predicted side effects.
+    The subgraph should include:
+       - **Drug Nodes**: The input drugs.
+       - **Mechanism Nodes**: Specific enzymes (e.g., "CYP3A4"), receptors (e.g., "5-HT Receptor"), or pathways involved.
+       - **Outcome Nodes**: The predicted clinical side effects.
+       - **Links**: Scientifically accurate edge labels (e.g., "inhibits", "substrate_of", "prolongs", "synergizes_with").
+    
+    For every node, provide a concise, high-quality scientific description.
+    Provide a confidence score (0.0 to 1.0) for the predicted side effects based on established medical literature.
   `;
 
   const responseSchema: Schema = {
@@ -29,7 +35,7 @@ export const predictInteractions = async (drugA: string, drugB: string): Promise
     properties: {
       summary: {
         type: Type.STRING,
-        description: "A concise scientific summary of the interaction mechanism."
+        description: "A detailed clinical summary explaining the mechanism of the interaction (PK/PD) among the combination."
       },
       nodes: {
         type: Type.ARRAY,
@@ -40,7 +46,7 @@ export const predictInteractions = async (drugA: string, drugB: string): Promise
             label: { type: Type.STRING },
             type: { type: Type.STRING, enum: [NodeType.DRUG, NodeType.PROTEIN, NodeType.SIDE_EFFECT] },
             val: { type: Type.NUMBER, description: "Relative importance size, 1-10" },
-            description: { type: Type.STRING, description: "Short scientific description of the entity." }
+            description: { type: Type.STRING, description: "Scientific description of the entity." }
           },
           required: ["id", "label", "type", "description"]
         }
@@ -52,7 +58,7 @@ export const predictInteractions = async (drugA: string, drugB: string): Promise
           properties: {
             source: { type: Type.STRING },
             target: { type: Type.STRING },
-            type: { type: Type.STRING, description: "Label for the edge, e.g., 'inhibits', 'targets'" }
+            type: { type: Type.STRING, description: "Scientific edge label, e.g., 'inhibits', 'metabolized_by'" }
           },
           required: ["source", "target", "type"]
         }
@@ -80,7 +86,7 @@ export const predictInteractions = async (drugA: string, drugB: string): Promise
       config: {
         responseMimeType: "application/json",
         responseSchema: responseSchema,
-        temperature: 0.2, // Low temperature for more factual scientific retrieval
+        temperature: 0.1, // Lower temperature for maximum factual accuracy and consistency
       }
     });
 
